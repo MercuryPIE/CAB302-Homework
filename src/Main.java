@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import obstacles.*;
 import common.*;
+import obstacles.core.*;
 
 class Main {
     public static void main(String[] args) {
@@ -48,17 +49,23 @@ class Main {
      */
     public static ArrayList<IObstacle> parseObstacles(HashMap<String, ArrayList<String>> parsedArgs) {
         ArrayList<IObstacle> obstacles = new ArrayList<>();
-        ObstacleType type = ObstacleType.GUARD;
-        String key = "-" + type.getArgumentName();
-        ArrayList<String> args = parsedArgs.get(key);
-        if (args == null) {
-            return obstacles;
-        }
-        for (String arg : args) {
-            // Remove the parentheses from the argument
-            String cleanedArg = stripParentheses(arg);
-            IObstacle obstacle = Guard.parse(cleanedArg);
-            obstacles.add(obstacle);
+        for (ObstacleType type : ObstacleType.values()) {
+            String key = "-" + type.getArgumentName();
+            ArrayList<String> args = parsedArgs.get(key);
+            if (args == null) {
+                continue;
+            }
+            for (String arg : args) {
+                // Remove the parentheses from the argument
+                String cleanedArg = stripParentheses(arg);
+                IObstacle obstacle = switch (type) {
+                    case GUARD -> Guard.parse(cleanedArg);
+                    case FENCE -> Fence.parse(cleanedArg);
+                    case SENSOR -> Sensor.parse(cleanedArg);
+                    case CAMERA -> Camera.parse(cleanedArg);
+                };
+                obstacles.add(obstacle);
+            }
         }
         return obstacles;
     }

@@ -1,6 +1,8 @@
-package obstacles;
+package obstacles.core;
 
 import common.Location;
+import obstacles.LocatableObstacle;
+import obstacles.ObstacleType;
 
 /**
  * Represents a guard on the map.
